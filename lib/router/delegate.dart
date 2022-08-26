@@ -1,5 +1,8 @@
-
-import 'package:blaze_router/router/logger.dart';
+import 'package:blaze_router/misc/logger.dart';
+import 'package:blaze_router/router/blaze_configuration.dart';
+import 'package:blaze_router/router/page_builder.dart';
+import 'package:blaze_router/router/route.dart';
+import 'package:blaze_router/router/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -8,36 +11,47 @@ typedef BlazeBuild<T> = List<Page<T>> Function(
   Uri? configuration,
 );
 
-class BlazeDelegate extends RouterDelegate<Uri>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin {
-  BlazeDelegate({required this.buildPages});
+abstract class IBlazeDelegate<T> extends RouterDelegate<IBlazeConfiguration>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin {}
 
-  final BlazeBuild buildPages;
-
-  Uri? _configuration;
-
-  final _globalKey = GlobalKey<NavigatorState>();
-
-  @override
-  Widget build(BuildContext context) {
-    final pages = buildPages(context, _configuration);
-
-    return Navigator(
-      reportsRouteUpdateToEngine: true,
-      restorationScopeId: 'blaze-router-restoration-scope',
-      key: navigatorKey,
-      pages: pages,
-      onPopPage: (route, result) {
-        l('Pop Navigator');
-        navigatorKey?.currentState?.pop();
-        return route.didPop(result);
-      },
-    );
+class BlazeDelegate<T> extends IBlazeDelegate<T> {
+  BlazeDelegate({required List<IBlazeRoute<T>> routes}) {
+    _routes = BlazeRoutes(routes: routes);
   }
 
+  late final BlazeRoutes<T> _routes;
+
+  IBlazeConfiguration? _configuration;
+
   @override
-  Future<void> setNewRoutePath(configuration) {
+  Widget build(BuildContext context) => PageBuilder(
+        configuration: currentConfiguration!,
+        routes: _routes,
+        builder: (context, pages) {
+          l('build pages: $pages');
+          return Navigator(
+            pages: pages,
+            restorationScopeId: 'blaze-router-restoration-scope',
+            reportsRouteUpdateToEngine: true,
+            key: navigatorKey,
+            onPopPage: (route, dynamic result) {
+              if (!route.didPop(result)) {
+                return false;
+              }
+              return true;
+            },
+          );
+        },
+      );
+
+  @override
+  Future<void> setNewRoutePath(IBlazeConfiguration configuration) {
     l('SetNewRoutePath $configuration');
+
+    if (_configuration == configuration) {
+      return SynchronousFuture(null);
+    }
+
     _configuration = configuration;
     notifyListeners();
 
@@ -45,8 +59,9 @@ class BlazeDelegate extends RouterDelegate<Uri>
   }
 
   @override
-  Uri? get currentConfiguration => _configuration;
+  IBlazeConfiguration? get currentConfiguration => _configuration;
 
   @override
-  GlobalKey<NavigatorState>? get navigatorKey => _globalKey;
+  GlobalKey<NavigatorState> get navigatorKey =>
+      GlobalObjectKey<NavigatorState>(this);
 }
