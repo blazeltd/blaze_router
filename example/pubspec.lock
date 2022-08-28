@@ -116,6 +116,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.1"
+  path_to_regexp:
+    dependency: transitive
+    description:
+      name: path_to_regexp
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
+  purple_lints:
+    dependency: transitive
+    description:
+      name: purple_lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
+  radix_tree:
+    dependency: transitive
+    description:
+      name: radix_tree
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   sky_engine:
     dependency: transitive
     description: flutter
