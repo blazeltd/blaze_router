@@ -1,4 +1,3 @@
-import 'package:blaze_router/misc/logger.dart';
 import 'package:blaze_router/router/blaze_configuration.dart';
 import 'package:flutter/material.dart';
 

@@ -43,13 +43,10 @@ class BlazeDelegate<T> extends IBlazeDelegate<T> {
   @override
   Future<void> setNewRoutePath(IBlazeConfiguration<T> configuration) {
     l('SetNewRoutePath $configuration');
-
-    if (_configuration == configuration) {
-      return SynchronousFuture(null);
+    if (_configuration != configuration) {
+      _configuration = configuration;
+      notifyListeners();
     }
-
-    _configuration = configuration;
-    notifyListeners();
 
     return SynchronousFuture(null);
   }
