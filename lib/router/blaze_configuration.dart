@@ -1,10 +1,13 @@
+import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/extenstions.dart';
 import 'package:flutter/material.dart';
 
-abstract class IBlazeConfiguration implements RouteInformation {
+abstract class IBlazeConfiguration<T> implements RouteInformation {
   IBlazeConfiguration({
     required this.location,
+    required this.mathedRoutes,
     this.state = const <String, dynamic>{},
+    this.pathParams = const <String, String>{},
   });
 
   @override
@@ -18,6 +21,12 @@ abstract class IBlazeConfiguration implements RouteInformation {
   /// Unmodiable map
   Map<String, String> get queryParams;
 
+  /// Path params for current configuration
+  /// Unmodiable map
+  final Map<String, String> pathParams;
+
+  final List<IBlazeRoute<T>> mathedRoutes;
+
   bool get isFirst;
 
   RouteInformation toRouteInformation();
@@ -26,10 +35,12 @@ abstract class IBlazeConfiguration implements RouteInformation {
   String toString() => '$runtimeType(location: $location, state: $state)';
 }
 
-abstract class BaseBlazeConfiguration extends IBlazeConfiguration {
+abstract class BaseBlazeConfiguration<T> extends IBlazeConfiguration<T> {
   BaseBlazeConfiguration({
     required super.location,
+    super.mathedRoutes = const [],
     super.state,
+    super.pathParams,
   });
 
   @override
@@ -45,13 +56,15 @@ abstract class BaseBlazeConfiguration extends IBlazeConfiguration {
   Map<String, String> get queryParams => Uri.parse(location).queryParameters;
 }
 
-class BlazeConfiguration extends BaseBlazeConfiguration {
+class BlazeConfiguration<T> extends BaseBlazeConfiguration<T> {
   BlazeConfiguration({
     required super.location,
+    super.mathedRoutes,
     super.state,
+    super.pathParams,
   });
 
-  BlazeConfiguration withQueryParams([
+  BlazeConfiguration<T> withQueryParams([
     final Map<String, String> queryParams = const <String, String>{},
   ]) {
     final uri = Uri.parse(location);
@@ -64,6 +77,7 @@ class BlazeConfiguration extends BaseBlazeConfiguration {
     return BlazeConfiguration(
       location: newUri.toString(),
       state: state,
+      mathedRoutes: mathedRoutes,
     );
   }
 }

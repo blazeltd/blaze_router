@@ -1,7 +1,6 @@
 import 'package:blaze_router/misc/logger.dart';
 import 'package:blaze_router/router/blaze_configuration.dart';
 import 'package:blaze_router/router/page_builder.dart';
-import 'package:blaze_router/router/route.dart';
 import 'package:blaze_router/router/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,22 +10,19 @@ typedef BlazeBuild<T> = List<Page<T>> Function(
   Uri? configuration,
 );
 
-abstract class IBlazeDelegate<T> extends RouterDelegate<IBlazeConfiguration>
+abstract class IBlazeDelegate<T> extends RouterDelegate<IBlazeConfiguration<T>>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {}
 
 class BlazeDelegate<T> extends IBlazeDelegate<T> {
-  BlazeDelegate({required List<IBlazeRoute<T>> routes}) {
-    _routes = BlazeRoutes(routes: routes);
-  }
+  BlazeDelegate({required this.routes});
+  final IBlazeRoutes<T> routes;
 
-  late final BlazeRoutes<T> _routes;
-
-  IBlazeConfiguration? _configuration;
+  IBlazeConfiguration<T>? _configuration;
 
   @override
-  Widget build(BuildContext context) => PageBuilder(
+  Widget build(BuildContext context) => PageBuilder<T>(
         configuration: currentConfiguration!,
-        routes: _routes,
+        routes: routes,
         builder: (context, pages) {
           l('build pages: $pages');
           return Navigator(
@@ -45,7 +41,7 @@ class BlazeDelegate<T> extends IBlazeDelegate<T> {
       );
 
   @override
-  Future<void> setNewRoutePath(IBlazeConfiguration configuration) {
+  Future<void> setNewRoutePath(IBlazeConfiguration<T> configuration) {
     l('SetNewRoutePath $configuration');
 
     if (_configuration == configuration) {
@@ -59,7 +55,7 @@ class BlazeDelegate<T> extends IBlazeDelegate<T> {
   }
 
   @override
-  IBlazeConfiguration? get currentConfiguration => _configuration;
+  IBlazeConfiguration<T>? get currentConfiguration => _configuration;
 
   @override
   GlobalKey<NavigatorState> get navigatorKey =>

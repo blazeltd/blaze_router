@@ -2,8 +2,10 @@ import 'package:blaze_router/misc/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class BlazeInformationProvider extends RouteInformationProvider
-    with WidgetsBindingObserver, ChangeNotifier {
+abstract class IBlazeInformationProvider extends RouteInformationProvider
+    with WidgetsBindingObserver, ChangeNotifier {}
+
+class BlazeInformationProvider extends IBlazeInformationProvider {
   /// Create a platform route information provider.
   ///
   /// Use the [initialRouteInformation] to set the default route information

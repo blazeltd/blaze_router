@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'dart:ui';
 
 import 'package:blaze_router/blaze_router.dart';
+import 'package:blaze_router/router/routes.dart';
 import 'package:example/routes.dart';
 import 'package:flutter/material.dart';
 
@@ -36,10 +37,11 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
+    final blazeRoutes = BlazeRoutes<Object>(routes: routes);
     return MaterialApp.router(
       title: 'Material App',
-      routerDelegate: BlazeDelegate(routes: routes),
-      routeInformationParser: BlazeParser(),
+      routerDelegate: BlazeDelegate(routes: blazeRoutes),
+      routeInformationParser: BlazeParser<Object>(routes: blazeRoutes),
       routeInformationProvider: BlazeInformationProvider(
         initialRouteInformation: RouteInformation(
           location: PlatformDispatcher.instance.defaultRouteName,

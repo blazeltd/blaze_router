@@ -1,10 +1,9 @@
 import 'package:blaze_router/blaze_router.dart';
-import 'package:blaze_router/router/blaze_configuration.dart';
 import 'package:blaze_router/router/page.dart';
 import 'package:flutter/material.dart';
 
-final routes = [
-  BlazeRoute(
+final routes = <BlazeRoute<Object>>[
+  BlazeRoute<Object>(
     path: '/',
     buildPage: (_) => const MaterialPage(
       child: Main(),
@@ -17,15 +16,9 @@ final routes = [
           ),
       children: [
         BlazeRoute(
-          path: '/2dad',
-          buildPage: (_) => const MaterialPage(
-            child: Main(),
-          ),
-        ),
-        BlazeRoute(
-          path: '/fdzfsd',
-          buildPage: (_) => const MaterialPage(
-            child: Main(),
+          path: '/:id',
+          buildPage: (c) => MaterialPage(
+            child: Fourth(c.pathParams['id']),
           ),
         ),
       ]),
@@ -55,10 +48,17 @@ class Main extends StatelessWidget {
             const Text('Main'),
             TextButton(
               onPressed: () {
-                Router.of(context).routerDelegate.setNewRoutePath(
-                      BlazeConfiguration(
+                Router.of(context)
+                    .routeInformationParser
+                    ?.parseRouteInformation(
+                      const RouteInformation(
                         location: '/second',
                       ),
+                    )
+                    .then(
+                      (value) => Router.of(context)
+                          .routerDelegate
+                          .setNewRoutePath(value),
                     );
               },
               child: const Text('GO to second'),
@@ -79,17 +79,20 @@ class Second extends StatelessWidget {
           const Text('Second'),
           TextButton(
             onPressed: () {
-              Router.of(context).routerDelegate.setNewRoutePath(
-                    BlazeConfiguration(
-                      location: '/third',
-                    ).withQueryParams(
-                      <String, String>{
-                        'aboba': 'jopapopa',
-                      },
+              Router.of(context)
+                  .routeInformationParser
+                  ?.parseRouteInformation(
+                    const RouteInformation(
+                      location: '/third?aboba=popajopa',
                     ),
+                  )
+                  .then(
+                    (value) => Router.of(context)
+                        .routerDelegate
+                        .setNewRoutePath(value),
                   );
             },
-            child: const Text('GO to main'),
+            child: const Text('GO to third'),
           ),
         ],
       ),
@@ -110,13 +113,54 @@ class Third extends StatelessWidget {
           Text('Third $aboba'),
           TextButton(
             onPressed: () {
-              Router.of(context).routerDelegate.setNewRoutePath(
-                    BlazeConfiguration(
-                      location: '/second',
+              Router.of(context)
+                  .routeInformationParser
+                  ?.parseRouteInformation(
+                    const RouteInformation(
+                      location: '/',
                     ),
+                  )
+                  .then(
+                    (value) => Router.of(context)
+                        .routerDelegate
+                        .setNewRoutePath(value),
                   );
             },
-            child: const Text('GO to second'),
+            child: const Text('GO to main'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Fourth extends StatelessWidget {
+  const Fourth(this.id, {Key? key}) : super(key: key);
+
+  final String? id;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          Text('Fourth $id'),
+          TextButton(
+            onPressed: () {
+              Router.of(context)
+                  .routeInformationParser
+                  ?.parseRouteInformation(
+                    const RouteInformation(
+                      location: '/',
+                    ),
+                  )
+                  .then(
+                    (value) => Router.of(context)
+                        .routerDelegate
+                        .setNewRoutePath(value),
+                  );
+            },
+            child: const Text('GO to main'),
           ),
         ],
       ),

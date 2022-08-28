@@ -1,22 +1,12 @@
-import 'dart:collection';
-
-import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/logger.dart';
 import 'package:blaze_router/router/blaze_configuration.dart';
 import 'package:blaze_router/router/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
 
 typedef BlazePageBuilder<T> = Widget Function(
   BuildContext context,
   List<Page<T>> pages,
 );
-
-class _PartEntry extends LinkedListEntry<_PartEntry> {
-  _PartEntry(this.part);
-
-  final String part;
-}
 
 /// {@template page_builder}
 /// PageBuilder widget
@@ -30,37 +20,29 @@ class PageBuilder<T> extends StatelessWidget {
     super.key,
   });
 
-  final BlazeRoutes<T> routes;
+  final IBlazeRoutes<T> routes;
 
   final BlazePageBuilder<T> builder;
 
-  final IBlazeConfiguration configuration;
+  final IBlazeConfiguration<T> configuration;
 
   @override
   Widget build(BuildContext context) => builder(
         context,
         computeToPages(configuration: configuration, routes: routes),
       );
-} // PageBuilder
+}
 
 List<Page<T>> computeToPages<T>({
-  required final IBlazeConfiguration configuration,
-  required final BlazeRoutes<T> routes,
+  required final IBlazeConfiguration<T> configuration,
+  required final IBlazeRoutes<T> routes,
 }) {
   final pages = <Page<T>>[];
-
-  final uri = Uri.parse(configuration.location);
-
-  for (final e in uri.pathSegments) {
-    final route = routes[e];
-    if (route == null) {
-      l('No route found for $e');
-      continue;
-    }
+  for (final route in configuration.mathedRoutes) {
     final page = route.buildPage(configuration);
     pages.add(page);
   }
-  final route = routes['/'] ?? routes[''];
+  final route = routes.find('/') ?? routes.find('');
   final page = route?.buildPage(configuration);
   if (page != null) {
     pages.insert(0, page);
