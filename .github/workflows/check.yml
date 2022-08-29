@@ -1,0 +1,53 @@
+on:
+  - push
+  - pull_request
+# this action is taken from PlugFox
+
+jobs:
+  test-analyze:
+    runs-on: ubuntu-latest
+    container:
+      image: dart:stable
+    steps:
+      - name: 🚂 Get latest code
+        uses: actions/checkout@v2
+
+      - name: 🚃 Cache pub modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-blaze-pub
+        with:
+          path: |
+            $PWD/.pub_cache/
+          key: ${{ runner.os }}-blaze
+
+      - name: 🗄️ Export pub cache directory
+        run: export PUB_CACHE=$PWD/.pub_cache/
+
+      - name: 👷 Install Dependencies
+        timeout-minutes: 1
+        run: dart pub get
+
+      - name: 🔎 Check format
+        timeout-minutes: 1
+        run: |
+          dart format --set-exit-if-changed -l 80 -o none .
+
+      - name: 🧪 Run tests
+        timeout-minutes: 2
+        run: |
+          dart run coverage:test_with_coverage -fb -o coverage -- \
+            --concurrency=6 --platform vm --coverage=./coverage --reporter=expanded test/isolation_test.dart          
+      
+      - name: 📈 Check analyzer
+        timeout-minutes: 1
+        run: dart analyze --fatal-infos --fatal-warnings lib
+
+      - name: 🥲 run tests
+        run: |
+          flutter test
+
+      - name: 📥 Upload coverage to Codecov
+        timeout-minutes: 1
+        uses: codecov/codecov-action@v2.1.0
+    
