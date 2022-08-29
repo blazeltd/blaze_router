@@ -39,11 +39,13 @@ List<Page<Object>> computeToPages({
 }) {
   final pages = <Page<Object>>[];
   for (final route in configuration.mathedRoutes) {
-    final page = route.buildPage(configuration);
-    pages.add(page);
+    final page = route.buildPage?.call(configuration);
+    if (page != null) {
+      pages.add(page);
+    }
   }
   final route = routes.find('/') ?? routes.find('');
-  final page = route?.buildPage(configuration);
+  final page = route?.buildPage?.call(configuration);
   if (page != null) {
     pages.insert(0, page);
   } else {

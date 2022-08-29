@@ -1,9 +1,7 @@
 import 'package:blaze_router/blaze_router.dart';
-import 'package:blaze_router/router/page.dart';
-import 'package:blaze_router/router/router.dart';
 import 'package:flutter/material.dart';
 
-final routes = <BlazeRoute<Object>>[
+final routes = <BlazeRoute>[
   BlazeRoute(
     path: '/',
     buildPage: (_) => const MaterialPage(

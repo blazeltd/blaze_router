@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 typedef BlazePage<T> = Page<T> Function(IBlazeConfiguration configuration);
 
 abstract class IBlazeRoute {
+  const IBlazeRoute();
+
   /// the route`s path
   String get path;
 
   /// the route`s page
-  BlazePage<Object> get buildPage;
+  BlazePage<Object>? get buildPage;
 
   /// inner routes
   List<IBlazeRoute> get children;
@@ -20,10 +22,10 @@ abstract class IBlazeRoute {
       ')';
 }
 
-class BlazeRoute<T> extends IBlazeRoute {
-  BlazeRoute({
+class BlazeRoute extends IBlazeRoute {
+  const BlazeRoute({
     required this.path,
-    required this.buildPage,
+    this.buildPage,
     this.children = const [],
   });
 
@@ -34,5 +36,5 @@ class BlazeRoute<T> extends IBlazeRoute {
   final List<IBlazeRoute> children;
 
   @override
-  final BlazePage<Object> buildPage;
+  final BlazePage<Object>? buildPage;
 }
