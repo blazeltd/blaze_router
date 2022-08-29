@@ -1,6 +1,21 @@
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - 'feature/**'
+      - 'bugfix/**'
+      - 'hotfix/**'
+      - 'support/**'
+    paths:
+      - 'lib/**.dart'
+  pull_request:
+    branches:
+      - 'feature/**'
+      - 'bugfix/**'
+      - 'hotfix/**'
+      - 'support/**'
+    paths:
+      - 'lib/**.dart'
+  workflow_dispatch:
 # this action is shamelessly stolen from plugfox 🌚
 
 jobs:
@@ -17,6 +32,10 @@ jobs:
       - name: Git configure
         run: |
           git config --global --add safe.directory /opt/flutter
+
+      - name: 🐝 Dart tools activation
+        run: |
+          dart pub global activate coverage
 
       - name: 🚃 Cache pub modules
         uses: actions/cache@v2
@@ -42,7 +61,7 @@ jobs:
       - name: 🧪 Run tests
         timeout-minutes: 2
         run: |
-          dart run coverage:test_with_coverage -fb -o coverage -- \
+          dart pub global run coverage:test_with_coverage -fb -o coverage -- \
             --concurrency=6 --platform vm --coverage=./coverage --reporter=expanded test/isolation_test.dart          
       
       - name: 📈 Check analyzer
