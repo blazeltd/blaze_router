@@ -1,13 +1,15 @@
 on:
   - push
   - pull_request
-# this action is taken from PlugFox
+# this action is shamelessly stolen from plugfox 🌚
 
 jobs:
   test-analyze:
     runs-on: ubuntu-latest
     container:
       image: plugfox/flutter:stable
+      options: --user root
+
     steps:
       - name: 🚂 Get latest code
         uses: actions/checkout@v2
