@@ -14,6 +14,10 @@ jobs:
       - name: 🚂 Get latest code
         uses: actions/checkout@v2
 
+      - name: Git configure
+        run: |
+          git config --global --add safe.directory /opt/flutter
+
       - name: 🚃 Cache pub modules
         uses: actions/cache@v2
         env:
