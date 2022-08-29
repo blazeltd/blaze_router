@@ -2,7 +2,7 @@ import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/extenstions.dart';
 import 'package:flutter/material.dart';
 
-abstract class IBlazeConfiguration<T> implements RouteInformation {
+abstract class IBlazeConfiguration implements RouteInformation {
   IBlazeConfiguration({
     required this.location,
     required this.mathedRoutes,
@@ -25,17 +25,29 @@ abstract class IBlazeConfiguration<T> implements RouteInformation {
   /// Unmodiable map
   final Map<String, String> pathParams;
 
-  final List<IBlazeRoute<T>> mathedRoutes;
+  final List<IBlazeRoute> mathedRoutes;
 
   bool get isFirst;
 
   RouteInformation toRouteInformation();
 
+  BlazeConfiguration withQueryParams([
+    final Map<String, String>? queryParams,
+  ]);
+
+  /// copywith
+  BlazeConfiguration copyWith({
+    String? location,
+    Map<String, dynamic>? state,
+    Map<String, String>? pathParams,
+    List<IBlazeRoute>? mathedRoutes,
+  });
+
   @override
   String toString() => '$runtimeType(location: $location, state: $state)';
 }
 
-abstract class BaseBlazeConfiguration<T> extends IBlazeConfiguration<T> {
+abstract class BaseBlazeConfiguration extends IBlazeConfiguration {
   BaseBlazeConfiguration({
     required super.location,
     super.mathedRoutes = const [],
@@ -53,25 +65,14 @@ abstract class BaseBlazeConfiguration<T> extends IBlazeConfiguration<T> {
       );
 
   @override
-  Map<String, String> get queryParams => Uri.parse(location).queryParameters;
-}
-
-class BlazeConfiguration<T> extends BaseBlazeConfiguration<T> {
-  BlazeConfiguration({
-    required super.location,
-    super.mathedRoutes,
-    super.state,
-    super.pathParams,
-  });
-
-  BlazeConfiguration<T> withQueryParams([
-    final Map<String, String> queryParams = const <String, String>{},
+  BlazeConfiguration withQueryParams([
+    final Map<String, String>? queryParams,
   ]) {
     final uri = Uri.parse(location);
     final newUri = uri.replace(
       queryParameters: <String, String>{
         ...uri.queryParameters,
-        ...queryParams,
+        ...?queryParams,
       },
     );
     return BlazeConfiguration(
@@ -80,4 +81,30 @@ class BlazeConfiguration<T> extends BaseBlazeConfiguration<T> {
       mathedRoutes: mathedRoutes,
     );
   }
+
+  @override
+  BlazeConfiguration copyWith({
+    String? location,
+    Map<String, dynamic>? state,
+    Map<String, String>? pathParams,
+    List<IBlazeRoute>? mathedRoutes,
+  }) =>
+      BlazeConfiguration(
+        location: location ?? this.location,
+        state: state ?? this.state,
+        pathParams: pathParams ?? this.pathParams,
+        mathedRoutes: mathedRoutes ?? this.mathedRoutes,
+      );
+
+  @override
+  Map<String, String> get queryParams => Uri.parse(location).queryParameters;
+}
+
+class BlazeConfiguration extends BaseBlazeConfiguration {
+  BlazeConfiguration({
+    required super.location,
+    super.mathedRoutes,
+    super.state,
+    super.pathParams,
+  });
 }

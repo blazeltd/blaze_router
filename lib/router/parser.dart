@@ -5,19 +5,19 @@ import 'package:blaze_router/router/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-abstract class IBlazeParser<T>
-    extends RouteInformationParser<IBlazeConfiguration<T>> {}
+abstract class IBlazeParser
+    extends RouteInformationParser<IBlazeConfiguration> {}
 
-class BlazeParser<T> extends IBlazeParser<T> {
+class BlazeParser extends IBlazeParser {
   BlazeParser({
     required this.routes,
-  }) : _matcher = BlazeMatcher<T>(routes: routes);
+  }) : _matcher = BlazeMatcher(routes: routes);
 
-  final IBlazeRoutes<T> routes;
-  final IBlazeMatcher<T> _matcher;
+  final IBlazeRoutes routes;
+  final IBlazeMatcher _matcher;
 
   @override
-  Future<IBlazeConfiguration<T>> parseRouteInformation(
+  Future<IBlazeConfiguration> parseRouteInformation(
     RouteInformation routeInformation,
   ) {
     l(
@@ -66,7 +66,7 @@ class BlazeParser<T> extends IBlazeParser<T> {
 
   @override
   RouteInformation restoreRouteInformation(
-    IBlazeConfiguration<T> configuration,
+    IBlazeConfiguration configuration,
   ) {
     l('restoreRouteInformation $configuration');
     return configuration.toRouteInformation();

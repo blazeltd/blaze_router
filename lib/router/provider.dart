@@ -42,7 +42,10 @@ class BlazeInformationProvider extends IBlazeInformationProvider {
   );
 
   void _platformReportsNewRouteInformation(RouteInformation routeInformation) {
-    l('_platformReportsNewRouteInformation ${routeInformation.location} ${routeInformation.state}');
+    l(
+      '_platformReportsNewRouteInformation ${routeInformation.location} '
+      '${routeInformation.state}',
+    );
     if (_value == routeInformation) return;
     _value = routeInformation;
     _valueInEngine = routeInformation;

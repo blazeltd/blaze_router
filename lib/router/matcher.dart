@@ -1,39 +1,41 @@
 import 'dart:collection';
 
 import 'package:blaze_router/blaze_router.dart';
+import 'package:blaze_router/misc/extenstions.dart';
 import 'package:blaze_router/misc/logger.dart';
 import 'package:blaze_router/router/routes.dart';
 import 'package:path/path.dart' as p;
 
-abstract class IBlazeMatcher<T> {
-  IBlazeRoutes<T> get routes;
+abstract class IBlazeMatcher {
+  IBlazeRoutes get routes;
 
-  List<IBlazeRoute<T>> call({
+  List<IBlazeRoute> call({
     required final String location,
     final Map<String, dynamic> state = const <String, dynamic>{},
     Map<String, String>? pathArgs,
   });
 }
 
-class BlazeMatcher<T> extends IBlazeMatcher<T> {
+class BlazeMatcher extends IBlazeMatcher {
   BlazeMatcher({
     required this.routes,
   });
 
   @override
-  final IBlazeRoutes<T> routes;
+  final IBlazeRoutes routes;
 
   @override
-  List<IBlazeRoute<T>> call({
+  List<IBlazeRoute> call({
     required final String location,
     final Map<String, dynamic> state = const <String, dynamic>{},
     Map<String, String>? pathArgs,
   }) {
-    final routesFromConf = <IBlazeRoute<T>>[];
+    final routesFromConf = <IBlazeRoute>[];
 
-    final uri = Uri.parse(location);
+    final segments = Uri.parse(location).path.pathSegments;
+    
     final lList = LinkedList<_LinkedItem>()
-      ..addAll(uri.pathSegments.map(_LinkedItem.new));
+      ..addAll(segments.map(_LinkedItem.new));
 
     for (final e in lList) {
       l('Iterating over: $e');
@@ -56,9 +58,9 @@ class BlazeMatcher<T> extends IBlazeMatcher<T> {
   }
 
   /// only internal usage
-  IBlazeRoute<T>? _recursiveMatch({
+  IBlazeRoute? _recursiveMatch({
     required _LinkedItem segment,
-    required IBlazeRoutes<T> routes,
+    required IBlazeRoutes routes,
     String path = '',
     Map<String, String>? pathArgs,
   }) {

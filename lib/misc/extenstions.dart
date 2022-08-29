@@ -1,5 +1,7 @@
 extension StringExtension on String {
   bool get isEmptyRoute => this == '/' || isEmpty;
+
+  List<String> get pathSegments => split('/');
 }
 
 extension IterableExtension<T> on List<T> {
