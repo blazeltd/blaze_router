@@ -62,9 +62,7 @@ jobs:
       - name: 🧪 Run tests
         timeout-minutes: 2
         run: |
-          ls -l
-          dart pub global run coverage:test_with_coverage -fb -o coverage -- \
-            --concurrency=6 --platform vm --coverage=./coverage --reporter=expanded test/blaze_router_test.dart          
+          flutter test --coverage         
 
       - name: 📥 Upload coverage to Codecov
         timeout-minutes: 1
