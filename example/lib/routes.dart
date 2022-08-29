@@ -1,9 +1,10 @@
 import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/router/page.dart';
+import 'package:blaze_router/router/router.dart';
 import 'package:flutter/material.dart';
 
 final routes = <BlazeRoute<Object>>[
-  BlazeRoute<Object>(
+  BlazeRoute(
     path: '/',
     buildPage: (_) => const MaterialPage(
       child: Main(),
@@ -48,21 +49,16 @@ class Main extends StatelessWidget {
             const Text('Main'),
             TextButton(
               onPressed: () {
-                Router.of(context)
-                    .routeInformationParser
-                    ?.parseRouteInformation(
-                      const RouteInformation(
-                        location: '/second',
-                      ),
-                    )
-                    .then(
-                      (value) => Router.of(context)
-                          .routerDelegate
-                          .setNewRoutePath(value),
-                    );
+                BlazeRouter.of(context).push('/second');
               },
               child: const Text('GO to second'),
             ),
+            TextButton(
+              onPressed: () {
+                BlazeRouter.of(context).pop();
+              },
+              child: const Text('POP'),
+            )
           ],
         ),
       );
@@ -79,21 +75,19 @@ class Second extends StatelessWidget {
           const Text('Second'),
           TextButton(
             onPressed: () {
-              Router.of(context)
-                  .routeInformationParser
-                  ?.parseRouteInformation(
-                    const RouteInformation(
-                      location: '/third?aboba=popajopa',
-                    ),
-                  )
-                  .then(
-                    (value) => Router.of(context)
-                        .routerDelegate
-                        .setNewRoutePath(value),
-                  );
+              BlazeRouter.of(context).push(
+                '/third',
+                queryParams: {'aboba': 'aboba'},
+              );
             },
             child: const Text('GO to third'),
           ),
+          TextButton(
+            onPressed: () {
+              BlazeRouter.of(context).pop();
+            },
+            child: const Text('POP'),
+          )
         ],
       ),
     );
@@ -113,21 +107,16 @@ class Third extends StatelessWidget {
           Text('Third $aboba'),
           TextButton(
             onPressed: () {
-              Router.of(context)
-                  .routeInformationParser
-                  ?.parseRouteInformation(
-                    const RouteInformation(
-                      location: '/',
-                    ),
-                  )
-                  .then(
-                    (value) => Router.of(context)
-                        .routerDelegate
-                        .setNewRoutePath(value),
-                  );
+              BlazeRouter.of(context).push('/second/123');
             },
-            child: const Text('GO to main'),
+            child: const Text('Go to Fourth(second with path params)'),
           ),
+          TextButton(
+            onPressed: () {
+              BlazeRouter.of(context).pop();
+            },
+            child: const Text('POP'),
+          )
         ],
       ),
     );
@@ -147,20 +136,9 @@ class Fourth extends StatelessWidget {
           Text('Fourth $id'),
           TextButton(
             onPressed: () {
-              Router.of(context)
-                  .routeInformationParser
-                  ?.parseRouteInformation(
-                    const RouteInformation(
-                      location: '/',
-                    ),
-                  )
-                  .then(
-                    (value) => Router.of(context)
-                        .routerDelegate
-                        .setNewRoutePath(value),
-                  );
+              BlazeRouter.of(context).pop();
             },
-            child: const Text('GO to main'),
+            child: const Text('POP'),
           ),
         ],
       ),

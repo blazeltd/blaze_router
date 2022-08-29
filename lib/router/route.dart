@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 
 typedef BlazePage<T> = Page<T> Function(IBlazeConfiguration configuration);
 
-abstract class IBlazeRoute<T> {
+abstract class IBlazeRoute {
   /// the route`s path
   String get path;
 
   /// the route`s page
-  BlazePage<T> get buildPage;
+  BlazePage<Object> get buildPage;
 
   /// inner routes
-  List<IBlazeRoute<T>> get children;
+  List<IBlazeRoute> get children;
 
   @override
   String toString() => 'IBlazeRoute('
@@ -20,7 +20,7 @@ abstract class IBlazeRoute<T> {
       ')';
 }
 
-class BlazeRoute<T> extends IBlazeRoute<T> {
+class BlazeRoute<T> extends IBlazeRoute {
   BlazeRoute({
     required this.path,
     required this.buildPage,
@@ -31,8 +31,8 @@ class BlazeRoute<T> extends IBlazeRoute<T> {
   final String path;
 
   @override
-  final List<IBlazeRoute<T>> children;
+  final List<IBlazeRoute> children;
 
   @override
-  final BlazePage<T> buildPage;
+  final BlazePage<Object> buildPage;
 }

@@ -1,39 +1,130 @@
 import 'package:blaze_router/blaze_router.dart';
+import 'package:blaze_router/misc/extenstions.dart';
 import 'package:blaze_router/router/routes.dart';
+import 'package:blaze_router/widget/inherited_router.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-abstract class IBlazeRouter<T> {
-  IBlazeDelegate<T> get delegate;
+abstract class IBlazeRouter {
+  /// router delegate
+  IBlazeDelegate get delegate;
 
-  IBlazeParser<T> get parser;
+  /// route information parser
+  IBlazeParser get parser;
 
+  /// information provider
   IBlazeInformationProvider get provider;
 
-  IBlazeRoutes<T> get routes;
+  /// recursively computed routes with helpful getters
+  /// used inside of the router lib.
+  IBlazeRoutes get routes;
+
+  /// get state from the configuration nearby
+  Map<String, dynamic> get state;
+
+  /// get path params from the configuration nearby
+  Map<String, String> get pathParams;
+
+  /// get query params from the configuration nearby
+  Map<String, String> get queryParams;
+
+  Future<void> push(
+    String path, {
+    Map<String, dynamic> state = const <String, dynamic>{},
+    Map<String, String> queryParams = const {},
+  });
+
+  Future<void> pop();
 }
 
-class BlazeRouter<T> extends IBlazeRouter<T> {
+class BlazeRouter extends IBlazeRouter {
   BlazeRouter({
-    required List<IBlazeRoute<T>> routes,
+    required List<IBlazeRoute> routes,
   }) : routes = BlazeRoutes(routes: routes) {
-    delegate = BlazeDelegate<T>(routes: this.routes);
-    parser = BlazeParser<T>(routes: this.routes);
+    parser = BlazeParser(routes: this.routes);
     provider = BlazeInformationProvider(
       initialRouteInformation: const RouteInformation(
         location: '/',
       ),
     );
+    delegate = BlazeDelegate(router: this);
   }
 
   @override
-  late final IBlazeRoutes<T> routes;
+  late final IBlazeRoutes routes;
 
   @override
-  late final IBlazeDelegate<T> delegate;
+  late final IBlazeDelegate delegate;
 
   @override
-  late final IBlazeParser<T> parser;
+  late final IBlazeParser parser;
 
   @override
   late final IBlazeInformationProvider provider;
+
+  @override
+  Map<String, dynamic> get state =>
+      delegate.currentConfiguration?.state ?? const <String, dynamic>{};
+
+  @override
+  Map<String, String> get pathParams =>
+      delegate.currentConfiguration?.pathParams ?? const <String, String>{};
+
+  @override
+  Map<String, String> get queryParams =>
+      delegate.currentConfiguration?.queryParams ?? const <String, String>{};
+
+  @override
+  Future<void> push(
+    String path, {
+    Map<String, dynamic> state = const <String, dynamic>{},
+    Map<String, String>? queryParams,
+  }) async {
+    final newConfiguration = await parser.parseRouteInformation(
+      RouteInformation(
+        location: path,
+        state: state,
+      ),
+    );
+    await delegate.setNewRoutePath(
+      newConfiguration.withQueryParams(queryParams),
+    );
+  }
+
+  @override
+  Future<void> pop() async {
+    // soft unwrap
+    final conf = delegate.currentConfiguration;
+    if (conf == null || conf.location.isEmptyRoute) {
+      return SynchronousFuture(null);
+    }
+    final newLoc = conf.location.split('/')..removeLast();
+    final newConfiguration = await parser.parseRouteInformation(
+      RouteInformation(
+        location: newLoc.join('/'),
+        state: conf.state,
+      ),
+    );
+    await delegate.setNewRoutePath(newConfiguration);
+  }
+
+  static IBlazeRouter of(BuildContext context, {bool listen = true}) {
+    InheritedBlazeRouter? inheritedRouter;
+    if (listen) {
+      inheritedRouter =
+          context.dependOnInheritedWidgetOfExactType<InheritedBlazeRouter>();
+    } else {
+      inheritedRouter = context
+          .getElementForInheritedWidgetOfExactType<InheritedBlazeRouter>()
+          ?.widget as InheritedBlazeRouter?;
+    }
+    return inheritedRouter?.router ?? _throw();
+  }
+
+  static Never _throw() {
+    throw FlutterError(
+      'BlazeRouter operation requested with a context that does not include a '
+      'BlazeRouter.',
+    );
+  }
 }

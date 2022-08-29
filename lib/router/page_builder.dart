@@ -3,15 +3,15 @@ import 'package:blaze_router/router/blaze_configuration.dart';
 import 'package:blaze_router/router/routes.dart';
 import 'package:flutter/material.dart';
 
-typedef BlazePageBuilder<T> = Widget Function(
+typedef BlazePageBuilder = Widget Function(
   BuildContext context,
-  List<Page<T>> pages,
+  List<Page<Object>> pages,
 );
 
 /// {@template page_builder}
 /// PageBuilder widget
 /// {@endtemplate}
-class PageBuilder<T> extends StatelessWidget {
+class PageBuilder extends StatelessWidget {
   /// {@macro page_builder}
   const PageBuilder({
     required this.routes,
@@ -20,11 +20,11 @@ class PageBuilder<T> extends StatelessWidget {
     super.key,
   });
 
-  final IBlazeRoutes<T> routes;
+  final IBlazeRoutes routes;
 
-  final BlazePageBuilder<T> builder;
+  final BlazePageBuilder builder;
 
-  final IBlazeConfiguration<T> configuration;
+  final IBlazeConfiguration configuration;
 
   @override
   Widget build(BuildContext context) => builder(
@@ -33,11 +33,11 @@ class PageBuilder<T> extends StatelessWidget {
       );
 }
 
-List<Page<T>> computeToPages<T>({
-  required final IBlazeConfiguration<T> configuration,
-  required final IBlazeRoutes<T> routes,
+List<Page<Object>> computeToPages({
+  required final IBlazeConfiguration configuration,
+  required final IBlazeRoutes routes,
 }) {
-  final pages = <Page<T>>[];
+  final pages = <Page<Object>>[];
   for (final route in configuration.mathedRoutes) {
     final page = route.buildPage(configuration);
     pages.add(page);
