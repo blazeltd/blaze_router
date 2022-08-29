@@ -55,9 +55,23 @@ class BlazeRoutes<T> extends IBlazeRoutes<T> {
       }
       final pathBeforeBasename = parentsPath ?? '';
       final fullPath = p.normalize(
-        '$pathBeforeBasename/${route.path}',
+        '/$pathBeforeBasename/${route.path}',
       );
-      _fullPaths[fullPath] = route;
+      final innering = fullPath.split('/')
+        ..removeWhere(
+          (element) => element.isEmpty,
+        );
+      try {
+        final map = _fullPaths[innering.length];
+        _fullPaths[innering.length] = {
+          ...?map,
+          ...{
+            fullPath: route,
+          },
+        };
+      } on Object catch (e) {
+        l('You have exceeded the innering length limit of 20 $e');
+      }
     }
     if (isFirst) {
       l('Recursively computed paths: $_fullPaths');
@@ -70,7 +84,16 @@ class BlazeRoutes<T> extends IBlazeRoutes<T> {
   static final _parents = <IBlazeRoute<dynamic>, IBlazeRoute<dynamic>>{};
 
   /// A map where key is a fullpath for the route and value is a route
-  static final _fullPaths = <String, IBlazeRoute<dynamic>>{};
+  static final _fullPaths = <int, Map<String, IBlazeRoute<dynamic>>>{}
+    ..addEntries(
+      List.generate(
+        20,
+        (index) => MapEntry(
+          index,
+          const <String, IBlazeRoute<dynamic>>{},
+        ),
+      ),
+    );
 
   @override
   IBlazeRoute<T>? parentFor(IBlazeRoute<T> route) =>
@@ -82,18 +105,22 @@ class BlazeRoutes<T> extends IBlazeRoutes<T> {
     Map<String, String>? pathArgs,
   ]) {
     final nPath = p.normalize('/$path');
+    final innering = nPath.split('/')
+      ..removeWhere(
+        (element) => element.isEmpty,
+      );
 
-    for (final pathRoute in _fullPaths.entries) {
-      l('Searching for route with path: $path, route: ${pathRoute.key}');
-      if (pathRoute.value.path == nPath) {
-        return pathRoute.value as IBlazeRoute<T>;
+    for (final pathRouteEntry in _fullPaths[innering.length]!.entries) {
+      l('Searching for route with path: $path, route: ${pathRouteEntry.key}');
+      if (pathRouteEntry.value.path == nPath) {
+        return pathRouteEntry.value as IBlazeRoute<T>;
       }
       final params = <String>[];
-      final regex = pathToRegExp(pathRoute.key, parameters: params);
+      final regex = pathToRegExp(pathRouteEntry.key, parameters: params);
       final match = regex.matchAsPrefix(nPath);
       if (match != null) {
         pathArgs?.addAll(extract(params, match));
-        return pathRoute.value as IBlazeRoute<T>;
+        return pathRouteEntry.value as IBlazeRoute<T>;
       }
     }
     return null;
