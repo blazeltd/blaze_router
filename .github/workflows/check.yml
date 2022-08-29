@@ -1,3 +1,4 @@
+# this action is shamelessly stolen from plugfox 🌚
 on:
   push:
     branches:
@@ -16,7 +17,6 @@ on:
     paths:
       - 'lib/**.dart'
   workflow_dispatch:
-# this action is shamelessly stolen from plugfox 🌚
 
 jobs:
   test-analyze:
