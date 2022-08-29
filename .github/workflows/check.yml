@@ -65,6 +65,7 @@ jobs:
           flutter test --coverage         
 
       - name: 📥 Upload coverage to Codecov
+        if: ${{ github.ref == 'refs/heads/master' }}
         timeout-minutes: 1
         uses: codecov/codecov-action@v2.1.0
     
