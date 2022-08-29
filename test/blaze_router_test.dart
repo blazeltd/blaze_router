@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  expect(true, isTrue);
+  test('just a test', () {
+    expect(true, isTrue);
+  });
 }
