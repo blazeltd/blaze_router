@@ -6,16 +6,13 @@ on:
       - 'bugfix/**'
       - 'hotfix/**'
       - 'support/**'
-    paths:
-      - 'lib/**.dart'
   pull_request:
     branches:
       - 'feature/**'
       - 'bugfix/**'
       - 'hotfix/**'
       - 'support/**'
-    paths:
-      - 'lib/**.dart'
+      - master
   workflow_dispatch:
 
 jobs:
