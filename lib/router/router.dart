@@ -1,4 +1,5 @@
 import 'package:blaze_router/blaze_router.dart';
+import 'package:blaze_router/misc/extenstions.dart';
 import 'package:blaze_router/router/routes.dart';
 import 'package:blaze_router/widget/inherited_router.dart';
 import 'package:flutter/foundation.dart';
@@ -94,7 +95,7 @@ class BlazeRouter extends IBlazeRouter {
   Future<void> pop() async {
     // soft unwrap
     final conf = delegate.currentConfiguration;
-    if (conf == null) {
+    if (conf == null || conf.location.isEmptyRoute) {
       return SynchronousFuture(null);
     }
     final newLoc = conf.location.split('/')..removeLast();

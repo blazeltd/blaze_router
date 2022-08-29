@@ -4,7 +4,7 @@ import 'package:blaze_router/router/router.dart';
 import 'package:flutter/material.dart';
 
 final routes = <BlazeRoute<Object>>[
-  BlazeRoute<Object>(
+  BlazeRoute(
     path: '/',
     buildPage: (_) => const MaterialPage(
       child: Main(),
@@ -53,6 +53,12 @@ class Main extends StatelessWidget {
               },
               child: const Text('GO to second'),
             ),
+            TextButton(
+              onPressed: () {
+                BlazeRouter.of(context).pop();
+              },
+              child: const Text('POP'),
+            )
           ],
         ),
       );
@@ -76,6 +82,12 @@ class Second extends StatelessWidget {
             },
             child: const Text('GO to third'),
           ),
+          TextButton(
+            onPressed: () {
+              BlazeRouter.of(context).pop();
+            },
+            child: const Text('POP'),
+          )
         ],
       ),
     );
@@ -99,6 +111,12 @@ class Third extends StatelessWidget {
             },
             child: const Text('Go to Fourth(second with path params)'),
           ),
+          TextButton(
+            onPressed: () {
+              BlazeRouter.of(context).pop();
+            },
+            child: const Text('POP'),
+          )
         ],
       ),
     );

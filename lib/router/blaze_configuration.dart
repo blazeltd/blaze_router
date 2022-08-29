@@ -69,17 +69,14 @@ abstract class BaseBlazeConfiguration extends IBlazeConfiguration {
     final Map<String, String>? queryParams,
   ]) {
     final uri = Uri.parse(location);
+    final qParams = <String, String>{
+      ...uri.queryParameters,
+      ...?queryParams,
+    };
     final newUri = uri.replace(
-      queryParameters: <String, String>{
-        ...uri.queryParameters,
-        ...?queryParams,
-      },
+      queryParameters: qParams.isEmpty ? null : qParams,
     );
-    return BlazeConfiguration(
-      location: newUri.toString(),
-      state: state,
-      mathedRoutes: mathedRoutes,
-    );
+    return copyWith(location: newUri.toString());
   }
 
   @override
