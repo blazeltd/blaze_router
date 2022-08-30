@@ -1,3 +1,5 @@
+import 'package:blaze_router/blaze_router.dart';
+
 extension StringExtension on String {
   bool get isEmptyRoute => this == '/' || isEmpty;
 
@@ -13,5 +15,12 @@ extension IterableExtension<T> on List<T> {
         ..add(this[i]);
     }
     return list;
+  }
+}
+
+extension RoutesExtension on List<IBlazeRoute> {
+  List<IBlazeRoute> sortRoutes() {
+    final sorted = [...this]..sort((a, b) => b.path.compareTo(a.path));
+    return sorted;
   }
 }

@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/extenstions.dart';
 import 'package:blaze_router/misc/logger.dart';
-import 'package:blaze_router/router/routes.dart';
 import 'package:path/path.dart' as p;
 
 abstract class IBlazeMatcher {
@@ -38,7 +37,7 @@ class BlazeMatcher extends IBlazeMatcher {
 
     for (final e in lList) {
       l('Iterating over: $e');
-      final route = routes.find(e.pathSegment);
+      final route = routes.find(e.pathSegment, pathArgs);
       if (route == null) {
         final matchingRoute = _recursiveMatch(
           segment: e,

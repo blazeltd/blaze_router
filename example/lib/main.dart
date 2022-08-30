@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 
 import 'package:blaze_router/router/router.dart';
 import 'package:example/routes.dart';
@@ -9,12 +8,8 @@ void main() => runZonedGuarded<Future<void>>(
       () async => runApp(
         const App(),
       ),
-      (error, stackTrace) => developer.log(
-        'Top level exception',
-        error: error,
-        stackTrace: stackTrace,
-        level: 1000,
-        name: 'main',
+      (error, stackTrace) => print(
+        'Top level exception $error $stackTrace',
       ),
       zoneValues: {
         #debug: true,

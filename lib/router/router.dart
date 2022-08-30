@@ -1,6 +1,5 @@
 import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/extenstions.dart';
-import 'package:blaze_router/router/routes.dart';
 import 'package:blaze_router/widget/inherited_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,11 @@ abstract class IBlazeRouter {
 class BlazeRouter extends IBlazeRouter {
   BlazeRouter({
     required List<IBlazeRoute> routes,
-  }) : routes = BlazeRoutes(routes: routes) {
+    int? maxInnering,
+  }) : routes = BlazeRoutes(
+          routes: routes,
+          maxInnering: maxInnering,
+        ) {
     parser = BlazeParser(routes: this.routes);
     provider = BlazeInformationProvider(
       initialRouteInformation: const RouteInformation(

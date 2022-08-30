@@ -1,14 +1,22 @@
 import 'package:blaze_router/blaze_router.dart';
-import 'package:blaze_router/router/page.dart';
-import 'package:blaze_router/router/router.dart';
 import 'package:flutter/material.dart';
 
-final routes = <BlazeRoute<Object>>[
+final routes = <BlazeRoute>[
   BlazeRoute(
     path: '/',
     buildPage: (_) => const MaterialPage(
       child: Main(),
     ),
+    children: [
+      BlazeRoute(
+        path: '/:idshnik',
+        buildPage: (c) {
+          return MaterialPage(
+            child: Fourth(c.pathParams['idshnik']),
+          );
+        },
+      )
+    ],
   ),
   BlazeRoute(
       path: '/second',
@@ -16,12 +24,12 @@ final routes = <BlazeRoute<Object>>[
             child: Second(),
           ),
       children: [
-        BlazeRoute(
-          path: '/:id',
-          buildPage: (c) => MaterialPage(
-            child: Fourth(c.pathParams['id']),
-          ),
-        ),
+        // BlazeRoute(
+        //   path: '/:id',
+        //   buildPage: (c) => MaterialPage(
+        //     child: Fourth(c.pathParams['id']),
+        //   ),
+        // ),
       ]),
   BlazeRoute(
     path: '/third',
