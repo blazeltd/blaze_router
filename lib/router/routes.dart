@@ -1,5 +1,6 @@
 import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/logger.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_to_regexp/path_to_regexp.dart';
 
@@ -9,27 +10,32 @@ abstract class IBlazeRoutes {
     Map<String, String>? pathArgs,
   ]);
 
-  List<IBlazeRoute> get _routes;
+  int? get maxInnering;
+
+  List<IBlazeRoute> get blazeRoutes;
 
   IBlazeRoute? parentFor(IBlazeRoute route);
 
   Iterable<E> map<E>(E Function(IBlazeRoute route) f);
-
-  @override
-  String toString() => 'routes: $_routes';
 }
 
 class BlazeRoutes extends IBlazeRoutes {
   BlazeRoutes({
     required List<IBlazeRoute> routes,
+    this.maxInnering,
   }) {
-    _routes = _recursiveCompute(routes, isFirst: true);
+    blazeRoutes = recursiveCompute(routes, isFirst: true);
   }
 
   @override
-  late final List<IBlazeRoute> _routes;
+  final int? maxInnering;
 
-  static List<IBlazeRoute> _recursiveCompute(
+  @override
+  @visibleForTesting
+  late final List<IBlazeRoute> blazeRoutes;
+
+  @visibleForTesting
+  List<IBlazeRoute> recursiveCompute(
     List<IBlazeRoute> routes, {
     IBlazeRoute? parent,
     String? parentsPath,
@@ -41,7 +47,7 @@ class BlazeRoutes extends IBlazeRoutes {
         result
           ..add(route)
           ..addAll(
-            _recursiveCompute(
+            recursiveCompute(
               route.children,
               parent: route,
               parentsPath: route.path,
@@ -49,7 +55,7 @@ class BlazeRoutes extends IBlazeRoutes {
           );
       } else {
         if (parent != null) {
-          _parents[route] = parent;
+          parents[route] = parent;
         }
         result.add(route);
       }
@@ -62,40 +68,40 @@ class BlazeRoutes extends IBlazeRoutes {
           (element) => element.isEmpty,
         );
       try {
-        final map = _fullPaths[innering.length];
-        _fullPaths[innering.length] = {
+        if (maxInnering != null && innering.length > maxInnering!) {
+          throw BlazeInneringError(
+            maxInnering!,
+            innering.length,
+          );
+        }
+        final map = fullPaths[innering.length];
+        fullPaths[innering.length] = {
           ...?map,
           ...{
             fullPath: route,
           },
         };
-      } on Object catch (e) {
-        l('You have exceeded the innering length limit of 20 $e');
+      } on Object {
+        rethrow;
       }
     }
     if (isFirst) {
-      l('Recursively computed paths: $_fullPaths');
+      l('Recursively computed paths: $fullPaths');
       l('Recursively computed routes: $result');
     }
     return result;
   }
 
   /// A map where key is a route and value is a parent route
-  static final _parents = <IBlazeRoute, IBlazeRoute>{};
+  @visibleForTesting
+  final parents = <IBlazeRoute, IBlazeRoute>{};
 
   /// A map where key is a fullpath for the route and value is a route
-  static final _fullPaths = <int, Map<String, IBlazeRoute>>{}..addEntries(
-      List.generate(
-        20,
-        (index) => MapEntry(
-          index,
-          const <String, IBlazeRoute>{},
-        ),
-      ),
-    );
+  @visibleForTesting
+  final fullPaths = <int, Map<String, IBlazeRoute>>{};
 
   @override
-  IBlazeRoute? parentFor(IBlazeRoute route) => _parents[route];
+  IBlazeRoute? parentFor(IBlazeRoute route) => parents[route];
 
   @override
   IBlazeRoute? find(
@@ -108,7 +114,7 @@ class BlazeRoutes extends IBlazeRoutes {
         (element) => element.isEmpty,
       );
 
-    for (final pathRouteEntry in _fullPaths[innering.length]!.entries) {
+    for (final pathRouteEntry in fullPaths[innering.length]!.entries) {
       l('Searching for route with path: $path, route: ${pathRouteEntry.key}');
       if (pathRouteEntry.value.path == nPath) {
         return pathRouteEntry.value;
@@ -125,8 +131,8 @@ class BlazeRoutes extends IBlazeRoutes {
   }
 
   @override
-  String toString() => 'routes: $_routes, parents: $_parents';
+  String toString() => 'routes: $blazeRoutes, parents: $parents';
 
   @override
-  Iterable<E> map<E>(E Function(IBlazeRoute route) f) => _routes.map(f);
+  Iterable<E> map<E>(E Function(IBlazeRoute route) f) => blazeRoutes.map(f);
 }
