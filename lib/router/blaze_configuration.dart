@@ -44,9 +44,9 @@ abstract class IBlazeConfiguration implements RouteInformation {
   });
 
   @override
-  String toString() => '$runtimeType(location: $location, ' 
-  'state: $state, '
-  'pathParams: $pathParams)';
+  String toString() => '$runtimeType(location: $location, '
+      'state: $state, '
+      'pathParams: $pathParams)';
 }
 
 abstract class BaseBlazeConfiguration extends IBlazeConfiguration {
