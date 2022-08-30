@@ -1,4 +1,5 @@
 import 'package:blaze_router/blaze_router.dart';
+import 'package:blaze_router/misc/extenstions.dart';
 import 'package:blaze_router/misc/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
@@ -42,13 +43,13 @@ class BlazeRoutes extends IBlazeRoutes {
     bool isFirst = false,
   }) {
     final result = <IBlazeRoute>[];
-    for (final route in routes) {
+    for (final route in routes.sortRoutes()) {
       if (route.children.isNotEmpty) {
         result
           ..add(route)
           ..addAll(
             recursiveCompute(
-              route.children,
+              route.children.sortRoutes(),
               parent: route,
               parentsPath: route.path,
             ),

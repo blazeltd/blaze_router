@@ -37,7 +37,7 @@ class BlazeMatcher extends IBlazeMatcher {
 
     for (final e in lList) {
       l('Iterating over: $e');
-      final route = routes.find(e.pathSegment);
+      final route = routes.find(e.pathSegment, pathArgs);
       if (route == null) {
         final matchingRoute = _recursiveMatch(
           segment: e,

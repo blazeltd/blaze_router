@@ -6,40 +6,6 @@ void main() {
   group(
     'Blaze Routes Tests',
     () {
-      late BlazeRoutes blazeRoutes;
-      late List<IBlazeRoute> routes;
-      late BlazeRoute rootRoute;
-      late BlazeRoute routeWithChildren;
-      late BlazeRoute childRoute;
-      late BlazeRoute childRoute2;
-      late BlazeRoute route;
-      late Map<IBlazeRoute, IBlazeRoute> parents;
-
-      setUpAll(() {
-        rootRoute = const BlazeRoute(
-          path: '/',
-        );
-        childRoute = const BlazeRoute(path: '/child');
-        childRoute2 = const BlazeRoute(path: '/child2');
-        routeWithChildren = BlazeRoute(
-          path: '/home',
-          children: [
-            childRoute,
-            childRoute2,
-          ],
-        );
-        route = const BlazeRoute(path: '/feed');
-        routes = <IBlazeRoute>[
-          rootRoute,
-          routeWithChildren,
-          route,
-        ];
-        blazeRoutes = BlazeRoutes(routes: routes);
-        parents = <IBlazeRoute, IBlazeRoute>{
-          childRoute: routeWithChildren,
-          childRoute2: routeWithChildren,
-        };
-      });
       group('find logic', () {
         /* Root route logic */
         test(
@@ -136,44 +102,159 @@ void main() {
 
         /* general route finding logic */
         test('Test if it finds a correct item by path', () {
-          expect(blazeRoutes.find('/home'), routeWithChildren);
-          expect(blazeRoutes.find('/'), rootRoute);
-          expect(blazeRoutes.find('/feed'), route);
+          const homeRoute = BlazeRoute(
+            path: '/home',
+          );
+          const rootRoute = BlazeRoute(
+            path: '/',
+          );
+          const feedRoute = BlazeRoute(
+            path: '/feed',
+          );
+          final routes = BlazeRoutes(
+            routes: const [
+              homeRoute,
+              feedRoute,
+              rootRoute,
+            ],
+          );
+          expect(routes.find('/home'), homeRoute);
+          expect(routes.find('/'), rootRoute);
+          expect(routes.find('/feed'), feedRoute);
         });
 
         test('Test if it doesn`t find a child without parents path', () {
+          const innerRoute = BlazeRoute(
+            path: '/inner',
+          );
+          const feedRoute = BlazeRoute(
+            path: '/feed',
+            children: [innerRoute],
+          );
+          final routes = BlazeRoutes(
+            routes: const [feedRoute],
+          );
           expect(
-            blazeRoutes.find('/child'),
+            routes.find('/inner'),
             isNull,
+          );
+        });
+        group('path args tests', () {
+          const homeRoute = BlazeRoute(
+            path: '/home/:id',
+          );
+          const someRoute = BlazeRoute(
+            path: '/someroute',
+          );
+
+          const oneInneringRoute = BlazeRoute(
+            path: '/:id',
+          );
+          const rootRoute = BlazeRoute(
+            path: '/',
+            children: [oneInneringRoute],
+          );
+          const feedRoute = BlazeRoute(
+            path: '/feed',
+          );
+          final routes = BlazeRoutes(
+            routes: const [
+              homeRoute,
+              feedRoute,
+              rootRoute,
+              someRoute,
+            ],
+          );
+
+          test('find a route with path args and exclude arguments', () {
+            final route = routes.find('/home/1');
+            expect(
+              route,
+              homeRoute,
+            );
+          });
+
+          test('should match exactly that route, not with path args', () {
+            final route = routes.find('/someroute');
+            expect(
+              route,
+              someRoute,
+            );
+          });
+
+          test(
+            'find a route with path args near the root and exclude args',
+            () {
+              final pathArgs = <String, String>{};
+              final route = routes.find('/209', pathArgs);
+              expect(
+                route,
+                oneInneringRoute,
+              );
+              expect(
+                pathArgs,
+                <String, String>{'id': '209'},
+              );
+            },
           );
         });
 
         /* general route finding logic end*/
       });
       group('parents logic', () {
+        const rootRoute = BlazeRoute(
+          path: '/',
+        );
+        const homeRoute = BlazeRoute(
+          path: '/home',
+        );
+        const innerRoute = BlazeRoute(
+          path: '/inner',
+        );
+        const feedRoute = BlazeRoute(
+          path: '/feed',
+          children: [
+            innerRoute,
+            homeRoute,
+          ],
+        );
+        final routes = BlazeRoutes(
+          routes: [
+            rootRoute,
+            homeRoute,
+            feedRoute,
+          ],
+        );
+        // right parents that should be found
+        final parents = <IBlazeRoute, IBlazeRoute>{
+          innerRoute: feedRoute,
+          homeRoute: feedRoute,
+        };
+
         test('test if parents are correct', () {
-          expect(blazeRoutes.parents, parents);
+          expect(routes.parents, parents);
         });
         test('It finds right parent for the child', () {
           expect(
-            blazeRoutes.parentFor(childRoute),
-            routeWithChildren,
+            feedRoute.children.map(routes.parentFor),
+            List.filled(
+              feedRoute.children.length,
+              feedRoute,
+            ),
           );
         });
         test("It doesn't find parent`s route", () {
           expect(
-            blazeRoutes.parentFor(route),
-            isNull,
-          );
-        });
-        test('It finds right parent for the root', () {
-          expect(
-            blazeRoutes.parentFor(rootRoute),
+            routes.parentFor(rootRoute),
             isNull,
           );
         });
       });
       group('innering logic', () {
+        const testRoute = BlazeRoute(
+          path: '/dadas/dsdas/dasdad/sdaw',
+        );
+        final routes = [testRoute];
         test('It throws error if innering is set', () {
           expect(
             () => BlazeRoutes(routes: routes, maxInnering: 1),
@@ -189,6 +270,34 @@ void main() {
         test('It works OK if innering is higher than cur. route innering', () {
           expect(
             () => BlazeRoutes(routes: routes, maxInnering: 10),
+            returnsNormally,
+          );
+        });
+      });
+
+      group('other methods', () {
+        const rootRoute = BlazeRoute(
+          path: '/',
+        );
+        const homeRoute = BlazeRoute(
+          path: '/home',
+        );
+        final routes = BlazeRoutes(
+          routes: [
+            rootRoute,
+            homeRoute,
+          ],
+        );
+        test('Maps routes correct', () {
+          expect(
+            routes.map((route) => route.path),
+            routes.blazeRoutes.map((e) => e.path),
+          );
+        });
+
+        test('to string returns normally', () {
+          expect(
+            routes.toString,
             returnsNormally,
           );
         });

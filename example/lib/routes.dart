@@ -7,6 +7,16 @@ final routes = <BlazeRoute>[
     buildPage: (_) => const MaterialPage(
       child: Main(),
     ),
+    children: [
+      BlazeRoute(
+        path: '/:idshnik',
+        buildPage: (c) {
+          return MaterialPage(
+            child: Fourth(c.pathParams['idshnik']),
+          );
+        },
+      )
+    ],
   ),
   BlazeRoute(
       path: '/second',
@@ -14,12 +24,12 @@ final routes = <BlazeRoute>[
             child: Second(),
           ),
       children: [
-        BlazeRoute(
-          path: '/:id',
-          buildPage: (c) => MaterialPage(
-            child: Fourth(c.pathParams['id']),
-          ),
-        ),
+        // BlazeRoute(
+        //   path: '/:id',
+        //   buildPage: (c) => MaterialPage(
+        //     child: Fourth(c.pathParams['id']),
+        //   ),
+        // ),
       ]),
   BlazeRoute(
     path: '/third',
