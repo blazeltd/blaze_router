@@ -275,6 +275,41 @@ void main() {
         });
       });
 
+      group('full paths computing logic tests', () {
+        test('check if innering was set correctly and path is right', () {
+          const innerRoute = BlazeRoute(
+            path: '/inner',
+          );
+          const feedRoute = BlazeRoute(
+            path: '/feed',
+            children: [innerRoute],
+          );
+          const rootRoute = BlazeRoute(
+            path: '/',
+            children: [feedRoute],
+          );
+          final routes = BlazeRoutes(
+            routes: [rootRoute],
+          );
+          expect(
+            routes.fullPaths[2]!.entries
+                .firstWhere(
+                  (element) => element.value == innerRoute,
+                )
+                .key,
+            '/feed/inner',
+          );
+          expect(
+            routes.fullPaths[1]!.entries
+                .firstWhere(
+                  (element) => element.value == feedRoute,
+                )
+                .key,
+            '/feed',
+          );
+        });
+      });
+
       group('other methods', () {
         const rootRoute = BlazeRoute(
           path: '/',
