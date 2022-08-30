@@ -6,13 +6,13 @@ on:
       - 'bugfix/**'
       - 'hotfix/**'
       - 'support/**'
+      - 'master'
   pull_request:
     branches:
       - 'feature/**'
       - 'bugfix/**'
       - 'hotfix/**'
       - 'support/**'
-      - master
   workflow_dispatch:
 
 jobs:
