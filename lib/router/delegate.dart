@@ -37,6 +37,7 @@ class BlazeDelegate extends IBlazeDelegate {
                 if (!route.didPop(result)) {
                   return false;
                 }
+                router.pop();
                 return true;
               },
             ),
