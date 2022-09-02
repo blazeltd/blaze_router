@@ -143,7 +143,8 @@ void main() {
     });
 
     testWidgets(
-      'test if it throws an exception where blaze router in context was not found',
+      'test if it throws an exception where blaze '
+      'router in context was not found',
       (tester) async {
         await tester.pumpWidget(
           Builder(

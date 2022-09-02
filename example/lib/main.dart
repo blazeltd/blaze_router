@@ -8,7 +8,7 @@ void main() => runZonedGuarded<Future<void>>(
       () async => runApp(
         const App(),
       ),
-      (error, stackTrace) => print(
+      (error, stackTrace) => Zone.root.print(
         'Top level exception $error $stackTrace',
       ),
       zoneValues: {
