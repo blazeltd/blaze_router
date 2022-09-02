@@ -1,3 +1,20 @@
+## 0.1.0
+
+### Testing
+
+- Unit-tested configuration
+- Unit-tested blaze matcher
+- Unit-tested errors
+- Unit-tested router
+
+### Breaking Changes:
+
+- Removed route information provider
+
+### Internal:
+
+- Removed useless try\catches
+
 ## 0.0.2
 
 ### Unit-tests

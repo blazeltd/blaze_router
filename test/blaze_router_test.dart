@@ -78,14 +78,6 @@ void main() {
       );
     });
 
-    test('check if provider is right', () {
-      final router = BlazeRouter(routes: routes);
-
-      expect(
-        router.provider,
-        isInstanceOf<RouteInformationProvider>(),
-      );
-    });
     test('state with empty configuration', () {
       final router = BlazeRouter(routes: routes);
 
@@ -148,10 +140,9 @@ void main() {
         ),
       );
       await router.push('/home');
-      await tester.pump();
+      await tester.pumpAndSettle();
       expect(router.location, '/home');
       await tester.tap(find.byType(BackButton));
-      await tester.pump();
       expect(router.location, '/');
     });
 

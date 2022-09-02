@@ -35,7 +35,6 @@ class _AppState extends State<App> {
       title: 'Material App',
       routerDelegate: router.delegate,
       routeInformationParser: router.parser,
-      routeInformationProvider: router.provider,
     );
   }
 }

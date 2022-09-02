@@ -31,7 +31,7 @@ class BlazeMatcher extends IBlazeMatcher {
   }) {
     final routesFromConf = <IBlazeRoute>[];
 
-    final segments = Uri.parse(location).path.pathSegments;
+    final segments = Uri.parse(location).path.pathSegments.removeDuplicates();
     final lList = LinkedList<_LinkedItem>()
       ..addAll(segments.map(_LinkedItem.new));
 
@@ -80,4 +80,7 @@ class _LinkedItem extends LinkedListEntry<_LinkedItem> {
   _LinkedItem(this.pathSegment);
 
   final String pathSegment;
+
+  @override
+  String toString() => pathSegment;
 }
