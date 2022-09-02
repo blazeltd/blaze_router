@@ -1,8 +1,12 @@
 import 'package:blaze_router/router/blaze_configuration.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-typedef BlazePage<T> = Page<T> Function(IBlazeConfiguration configuration);
+typedef BlazePage<T> = Page<T> Function(
+  IBlazeConfiguration configuration,
+);
 
+@immutable
 abstract class IBlazeRoute {
   const IBlazeRoute();
 
@@ -20,6 +24,16 @@ abstract class IBlazeRoute {
       'path: $path, '
       'children: $children, '
       ')';
+
+  @override
+  int get hashCode => Object.hash(path, buildPage, children);
+
+  @override
+  bool operator ==(Object other) =>
+      other is IBlazeRoute &&
+      const DeepCollectionEquality().equals(path, other.path) &&
+      const DeepCollectionEquality().equals(buildPage, other.buildPage) &&
+      const DeepCollectionEquality().equals(children, other.children);
 }
 
 class BlazeRoute extends IBlazeRoute {

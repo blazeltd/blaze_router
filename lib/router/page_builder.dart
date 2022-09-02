@@ -29,7 +29,10 @@ class PageBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) => builder(
         context,
-        computeToPages(configuration: configuration, routes: routes),
+        computeToPages(
+          configuration: configuration,
+          routes: routes,
+        ),
       );
 }
 
@@ -49,7 +52,8 @@ List<Page<Object>> computeToPages({
   if (page != null) {
     pages.insert(0, page);
   } else {
-    l('Did not find root page');
+    // TODO(mlazebny): add error here
+    l('BuildPage was not given');
   }
   l('computed pages: $pages');
 

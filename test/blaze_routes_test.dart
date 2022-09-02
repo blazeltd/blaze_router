@@ -140,9 +140,16 @@ void main() {
           );
         });
         group('path args tests', () {
+          const homeRouteChildPathArgsRoute = BlazeRoute(
+            path: '/:money',
+          );
           const homeRoute = BlazeRoute(
             path: '/home/:id',
+            children: [
+              homeRouteChildPathArgsRoute,
+            ],
           );
+
           const someRoute = BlazeRoute(
             path: '/someroute',
           );
@@ -171,6 +178,14 @@ void main() {
             expect(
               route,
               homeRoute,
+            );
+          });
+
+          test('find a route with path args and exclude arguments', () {
+            final route = routes.find('/home/1/2');
+            expect(
+              route,
+              homeRouteChildPathArgsRoute,
             );
           });
 
@@ -219,7 +234,7 @@ void main() {
           ],
         );
         final routes = BlazeRoutes(
-          routes: [
+          routes: const [
             rootRoute,
             homeRoute,
             feedRoute,
@@ -289,7 +304,7 @@ void main() {
             children: [feedRoute],
           );
           final routes = BlazeRoutes(
-            routes: [rootRoute],
+            routes: const [rootRoute],
           );
           expect(
             routes.fullPaths[2]!.entries
@@ -318,7 +333,7 @@ void main() {
           path: '/home',
         );
         final routes = BlazeRoutes(
-          routes: [
+          routes: const [
             rootRoute,
             homeRoute,
           ],
@@ -335,6 +350,34 @@ void main() {
             routes.toString,
             returnsNormally,
           );
+        });
+        test('equality with other routes', () {
+          final otherRoutes = BlazeRoutes(
+            routes: const [
+              rootRoute,
+              homeRoute,
+            ],
+          );
+          expect(
+            routes == otherRoutes,
+            isTrue,
+          );
+        });
+
+        test('hashcode test', () {
+          final firstRoutes = BlazeRoutes(
+            routes: const [
+              rootRoute,
+              homeRoute,
+            ],
+          );
+          final secondRoutes = BlazeRoutes(
+            routes: const [
+              rootRoute,
+              homeRoute,
+            ],
+          );
+          expect(firstRoutes.hashCode, secondRoutes.hashCode);
         });
       });
     },

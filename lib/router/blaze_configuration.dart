@@ -1,9 +1,11 @@
 import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/extenstions.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+@immutable
 abstract class IBlazeConfiguration implements RouteInformation {
-  IBlazeConfiguration({
+  const IBlazeConfiguration({
     required this.location,
     required this.mathedRoutes,
     this.state = const <String, dynamic>{},
@@ -47,10 +49,28 @@ abstract class IBlazeConfiguration implements RouteInformation {
   String toString() => '$runtimeType(location: $location, '
       'state: $state, '
       'pathParams: $pathParams)';
+
+  @override
+  int get hashCode => Object.hash(
+        location,
+        state,
+        queryParams,
+        pathParams,
+        mathedRoutes,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      other is IBlazeConfiguration &&
+      const DeepCollectionEquality().equals(location, other.location) &&
+      const DeepCollectionEquality().equals(state, other.state) &&
+      const DeepCollectionEquality().equals(queryParams, other.queryParams) &&
+      const DeepCollectionEquality().equals(pathParams, other.pathParams) &&
+      const DeepCollectionEquality().equals(mathedRoutes, other.mathedRoutes);
 }
 
 abstract class BaseBlazeConfiguration extends IBlazeConfiguration {
-  BaseBlazeConfiguration({
+  const BaseBlazeConfiguration({
     required super.location,
     super.mathedRoutes = const [],
     super.state,
@@ -100,7 +120,7 @@ abstract class BaseBlazeConfiguration extends IBlazeConfiguration {
 }
 
 class BlazeConfiguration extends BaseBlazeConfiguration {
-  BlazeConfiguration({
+  const BlazeConfiguration({
     required super.location,
     super.mathedRoutes,
     super.state,
