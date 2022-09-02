@@ -18,9 +18,16 @@ void main() {
     final homeRoute = BlazeRoute(
       path: '/home',
       buildPage: (configuration) => MaterialPage(
-        child: Builder(
-          builder: (context) => Text(
-            BlazeRouter.of(context, listen: false).location,
+        child: Material(
+          child: Builder(
+            builder: (context) => Column(
+              children: [
+                Text(
+                  BlazeRouter.of(context, listen: false).location,
+                ),
+                BackButton(onPressed: Navigator.of(context).pop),
+              ],
+            ),
           ),
         ),
       ),
@@ -131,7 +138,40 @@ void main() {
       );
     });
 
-    testWidgets('test of method', (tester) async {
+    testWidgets('test Navigator.of(context).pop() method', (tester) async {
+      final router = BlazeRouter(routes: routes);
+      expect(router.location, '/');
+      await tester.pumpWidget(
+        MaterialApp.router(
+          routeInformationParser: router.parser,
+          routerDelegate: router.delegate,
+        ),
+      );
+      await router.push('/home');
+      await tester.pump();
+      expect(router.location, '/home');
+      await tester.tap(find.byType(BackButton));
+      await tester.pump();
+      expect(router.location, '/');
+    });
+
+    testWidgets('test empty build page error', (tester) async {
+      final router = BlazeRouter(
+        routes: const [BlazeRoute(path: '/')],
+      );
+      await tester.pumpWidget(
+        MaterialApp.router(
+          routeInformationParser: router.parser,
+          routerDelegate: router.delegate,
+        ),
+      );
+      expect(
+        tester.takeException(),
+        isA<EmptyBuildPageError>(),
+      );
+    });
+
+    testWidgets('test `of` method', (tester) async {
       final router = BlazeRouter(routes: routes);
       await tester.pumpWidget(
         BlazeRouterTestApp(

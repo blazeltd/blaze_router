@@ -1,6 +1,6 @@
+import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/logger.dart';
 import 'package:blaze_router/router/blaze_configuration.dart';
-import 'package:blaze_router/router/routes.dart';
 import 'package:flutter/material.dart';
 
 typedef BlazePageBuilder = Widget Function(
@@ -49,11 +49,11 @@ List<Page<Object>> computeToPages({
   }
   final route = routes.find('/') ?? routes.find('');
   final page = route?.buildPage?.call(configuration);
+
   if (page != null) {
     pages.insert(0, page);
   } else {
-    // TODO(mlazebny): add error here
-    l('BuildPage was not given');
+    throw EmptyBuildPageError(route);
   }
   l('computed pages: $pages');
 
