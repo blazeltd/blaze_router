@@ -1,5 +1,6 @@
 import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/extenstions.dart';
+import 'package:blaze_router/router/blaze_configuration.dart';
 import 'package:blaze_router/widget/inherited_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,12 @@ abstract class IBlazeRouter {
 
   /// get query params from the configuration nearby
   Map<String, String> get queryParams;
+
+  /// get current location
+  String get location;
+
+  /// get current configuration
+  IBlazeConfiguration? get configuration;
 
   Future<void> push(
     String path, {
@@ -78,6 +85,12 @@ class BlazeRouter extends IBlazeRouter {
       delegate.currentConfiguration?.queryParams ?? const <String, String>{};
 
   @override
+  String get location => delegate.currentConfiguration?.location ?? '/';
+
+  @override
+  IBlazeConfiguration? get configuration => delegate.currentConfiguration;
+
+  @override
   Future<void> push(
     String path, {
     Map<String, dynamic> state = const <String, dynamic>{},
@@ -97,11 +110,18 @@ class BlazeRouter extends IBlazeRouter {
   @override
   Future<void> pop() async {
     // soft unwrap
-    final conf = delegate.currentConfiguration;
+    final conf = configuration;
     if (conf == null || conf.location.isEmptyRoute) {
       return SynchronousFuture(null);
     }
-    final newLoc = conf.location.split('/')..removeLast();
+    final newLoc = conf.location.split('/')
+      ..removeLast()
+      ..removeWhere(
+        (element) => element.isEmpty,
+      );
+    if (newLoc.isEmpty) {
+      newLoc.insert(0, '/');
+    }
     final newConfiguration = await parser.parseRouteInformation(
       RouteInformation(
         location: newLoc.join('/'),

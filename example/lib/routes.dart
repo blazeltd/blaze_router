@@ -19,18 +19,11 @@ final routes = <BlazeRoute>[
     ],
   ),
   BlazeRoute(
-      path: '/second',
-      buildPage: (_) => const MaterialPage(
-            child: Second(),
-          ),
-      children: [
-        // BlazeRoute(
-        //   path: '/:id',
-        //   buildPage: (c) => MaterialPage(
-        //     child: Fourth(c.pathParams['id']),
-        //   ),
-        // ),
-      ]),
+    path: '/second',
+    buildPage: (_) => const MaterialPage(
+      child: Second(),
+    ),
+  ),
   BlazeRoute(
     path: '/third',
     buildPage: (configuration) {

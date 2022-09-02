@@ -1,10 +1,12 @@
 import 'package:blaze_router/blaze_router.dart';
 import 'package:blaze_router/misc/extenstions.dart';
 import 'package:blaze_router/misc/logger.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_to_regexp/path_to_regexp.dart';
 
+@immutable
 abstract class IBlazeRoutes {
   IBlazeRoute? find(
     String path, [
@@ -18,6 +20,18 @@ abstract class IBlazeRoutes {
   IBlazeRoute? parentFor(IBlazeRoute route);
 
   Iterable<E> map<E>(E Function(IBlazeRoute route) f);
+
+  @override
+  int get hashCode => Object.hashAll([
+        ...blazeRoutes,
+        maxInnering,
+      ]);
+
+  @override
+  bool operator ==(Object other) =>
+      other is IBlazeRoutes &&
+      const DeepCollectionEquality().equals(maxInnering, other.maxInnering) &&
+      const DeepCollectionEquality().equals(blazeRoutes, other.blazeRoutes);
 }
 
 class BlazeRoutes extends IBlazeRoutes {
@@ -116,8 +130,11 @@ class BlazeRoutes extends IBlazeRoutes {
       );
 
     for (final pathRouteEntry in fullPaths[innering.length]!.entries) {
-      l('Searching for route with path: $path, route: ${pathRouteEntry.key}');
-      if (pathRouteEntry.value.path == nPath) {
+      l(
+        'Searching for route with path: $nPath, route: ${pathRouteEntry.key}, '
+        'isEqual: ${nPath == pathRouteEntry.key}',
+      );
+      if (pathRouteEntry.key.trim() == nPath.trim()) {
         return pathRouteEntry.value;
       }
       final params = <String>[];
