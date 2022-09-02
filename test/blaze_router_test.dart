@@ -155,6 +155,22 @@ void main() {
       expect(router.location, '/');
     });
 
+    testWidgets('test empty build page error', (tester) async {
+      final router = BlazeRouter(
+        routes: const [BlazeRoute(path: '/')],
+      );
+      await tester.pumpWidget(
+        MaterialApp.router(
+          routeInformationParser: router.parser,
+          routerDelegate: router.delegate,
+        ),
+      );
+      expect(
+        tester.takeException(),
+        isA<EmptyBuildPageError>(),
+      );
+    });
+
     testWidgets('test `of` method', (tester) async {
       final router = BlazeRouter(routes: routes);
       await tester.pumpWidget(
