@@ -12,9 +12,6 @@ abstract class IBlazeRouter {
   /// route information parser
   IBlazeParser get parser;
 
-  /// information provider
-  IBlazeInformationProvider get provider;
-
   /// recursively computed routes with helpful getters
   /// used inside of the router lib.
   IBlazeRoutes get routes;
@@ -52,11 +49,6 @@ class BlazeRouter extends IBlazeRouter {
           maxInnering: maxInnering,
         ) {
     parser = BlazeParser(routes: this.routes);
-    provider = BlazeInformationProvider(
-      initialRouteInformation: const RouteInformation(
-        location: '/',
-      ),
-    );
     delegate = BlazeDelegate(router: this);
   }
 
@@ -68,9 +60,6 @@ class BlazeRouter extends IBlazeRouter {
 
   @override
   late final IBlazeParser parser;
-
-  @override
-  late final IBlazeInformationProvider provider;
 
   @override
   Map<String, dynamic> get state =>

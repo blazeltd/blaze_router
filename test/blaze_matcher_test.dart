@@ -68,6 +68,13 @@ void main() {
       expect(matchedRoutes, [rootRoute]);
     });
 
+    test('normally matches', () {
+      expect(
+        matcher(location: '/child'),
+        [rootRoute, childRoute],
+      );
+    });
+
     test('match slash location', () {
       final matchedRoutes = matcher(location: '/');
       expect(matchedRoutes.length, 1);
