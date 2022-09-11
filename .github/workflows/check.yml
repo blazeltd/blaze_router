@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: 🫰 Check flutter version
-        uses: flutter --version
+        run: flutter --version
         
       - name: 🚂 Get latest code
         uses: actions/checkout@v2
