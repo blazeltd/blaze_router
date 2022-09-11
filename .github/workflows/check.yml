@@ -23,6 +23,9 @@ jobs:
       options: --user root
 
     steps:
+      - name: 🫰 Check flutter version
+        uses: flutter --version
+        
       - name: 🚂 Get latest code
         uses: actions/checkout@v2
 
