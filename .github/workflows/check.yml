@@ -1,10 +1,18 @@
+# this action is shamelessly stolen from plugfox 🌚
 on:
   push:
     branches:
+      - 'feature/**'
+      - 'bugfix/**'
+      - 'hotfix/**'
+      - 'support/**'
       - 'master'
   pull_request:
     branches:
-      - 'master'
+      - 'feature/**'
+      - 'bugfix/**'
+      - 'hotfix/**'
+      - 'support/**'
   workflow_dispatch:
 
 jobs:
@@ -17,7 +25,7 @@ jobs:
     steps:
       - name: 🫰 Check flutter version
         uses: flutter --version
-
+        
       - name: 🚂 Get latest code
         uses: actions/checkout@v2
 
