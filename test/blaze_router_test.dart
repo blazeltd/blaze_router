@@ -7,7 +7,7 @@ void main() {
   group('Blaze Router Tests', () {
     final rootRoute = BlazeRoute(
       path: '/',
-      buildPage: (configuration) => MaterialPage(
+      buildPage: (configuration, _) => MaterialPage(
         child: Builder(
           builder: (context) => Text(
             BlazeRouter.of(context).location,
@@ -17,7 +17,7 @@ void main() {
     );
     final homeRoute = BlazeRoute(
       path: '/home',
-      buildPage: (configuration) => MaterialPage(
+      buildPage: (configuration, _) => MaterialPage(
         child: Material(
           child: Builder(
             builder: (context) => Column(
@@ -158,7 +158,7 @@ void main() {
       );
       expect(
         tester.takeException(),
-        isA<EmptyBuildPageError>(),
+        isA<EmptyPagesException>(),
       );
     });
 

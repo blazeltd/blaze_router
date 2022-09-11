@@ -15,7 +15,7 @@ void main() {
               routes: [
                 BlazeRoute(
                   path: '/',
-                  buildPage: (configuration) => const MaterialPage<Object>(
+                  buildPage: (configuration, _) => const MaterialPage<Object>(
                     child: Text('root'),
                   ),
                 ),
@@ -33,7 +33,7 @@ void main() {
               routes: [
                 BlazeRoute(
                   path: '',
-                  buildPage: (configuration) => const MaterialPage<Object>(
+                  buildPage: (configuration, _) => const MaterialPage<Object>(
                     child: Text('root'),
                   ),
                 ),
@@ -51,7 +51,7 @@ void main() {
               routes: [
                 BlazeRoute(
                   path: '/',
-                  buildPage: (configuration) => const MaterialPage<Object>(
+                  buildPage: (configuration, _) => const MaterialPage<Object>(
                     child: Text('root'),
                   ),
                 ),
@@ -69,7 +69,7 @@ void main() {
               routes: [
                 BlazeRoute(
                   path: '',
-                  buildPage: (configuration) => const MaterialPage<Object>(
+                  buildPage: (configuration, _) => const MaterialPage<Object>(
                     child: Text('root'),
                   ),
                 ),
@@ -87,7 +87,7 @@ void main() {
               routes: [
                 BlazeRoute(
                   path: '',
-                  buildPage: (configuration) => const MaterialPage<Object>(
+                  buildPage: (configuration, _) => const MaterialPage<Object>(
                     child: Text('root'),
                   ),
                 ),
@@ -273,7 +273,7 @@ void main() {
         test('It throws error if innering is set', () {
           expect(
             () => BlazeRoutes(routes: routes, maxInnering: 1),
-            throwsA(isA<BlazeInneringError>()),
+            throwsA(isA<BlazeInneringException>()),
           );
         });
         test('It returns normally if innering is not set', () {

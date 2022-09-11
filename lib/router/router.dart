@@ -4,6 +4,7 @@ import 'package:blaze_router/router/blaze_configuration.dart';
 import 'package:blaze_router/widget/inherited_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 
 abstract class IBlazeRouter {
   /// router delegate
@@ -113,7 +114,7 @@ class BlazeRouter extends IBlazeRouter {
     }
     final newConfiguration = await parser.parseRouteInformation(
       RouteInformation(
-        location: newLoc.join('/'),
+        location: p.normalize('/' + p.joinAll(newLoc)),
         state: conf.state,
       ),
     );

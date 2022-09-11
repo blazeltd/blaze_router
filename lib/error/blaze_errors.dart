@@ -1,7 +1,5 @@
-import 'package:blaze_router/blaze_router.dart';
-
-class BlazeInneringError extends Error {
-  BlazeInneringError(this.maxInnering, this.yourInnering)
+class BlazeInneringException implements Exception {
+  BlazeInneringException(this.maxInnering, this.yourInnering)
       : assert(
           yourInnering > maxInnering,
           'Your innering is less or equals max innering',
@@ -15,11 +13,9 @@ class BlazeInneringError extends Error {
       'while yourInnering = $yourInnering';
 }
 
-class EmptyBuildPageError extends Error {
-  EmptyBuildPageError(this.route);
-
-  final IBlazeRoute? route;
+class EmptyPagesException implements Exception {
+  EmptyPagesException();
 
   @override
-  String toString() => 'EmptyBuildPageError: page = $route';
+  String toString() => 'No pages were built';
 }

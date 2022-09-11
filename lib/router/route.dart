@@ -2,7 +2,12 @@ import 'package:blaze_router/router/blaze_configuration.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-typedef BlazePage<T> = Page<T> Function(
+typedef BlazePage = Page<Object> Function(
+  IBlazeConfiguration configuration,
+  List<Page<Object>>? pages,
+);
+
+typedef EmptyBlazePage = Page<Object> Function(
   IBlazeConfiguration configuration,
 );
 
@@ -14,7 +19,7 @@ abstract class IBlazeRoute {
   String get path;
 
   /// the route`s page
-  BlazePage<Object>? get buildPage;
+  BlazePage? get buildPage;
 
   /// inner routes
   List<IBlazeRoute> get children;
@@ -36,6 +41,7 @@ abstract class IBlazeRoute {
       const DeepCollectionEquality().equals(children, other.children);
 }
 
+/// Default blaze route
 class BlazeRoute extends IBlazeRoute {
   const BlazeRoute({
     required this.path,
@@ -50,5 +56,26 @@ class BlazeRoute extends IBlazeRoute {
   final List<IBlazeRoute> children;
 
   @override
-  final BlazePage<Object>? buildPage;
+  final BlazePage? buildPage;
+}
+
+/// Use only if you want to nest pages
+class BlazeNestedRoute extends IBlazeRoute {
+  const BlazeNestedRoute({
+    required this.path,
+    this.buildPage,
+    this.emptyPage,
+    this.children = const [],
+  });
+
+  @override
+  final String path;
+
+  @override
+  final List<IBlazeRoute> children;
+
+  @override
+  final BlazePage? buildPage;
+
+  final EmptyBlazePage? emptyPage;
 }
