@@ -30,10 +30,11 @@ class BlazeMatcher extends IBlazeMatcher {
     Map<String, String>? pathArgs,
   }) {
     final routesFromConf = <IBlazeRoute>[];
-
     final segments = Uri.parse(location).path.pathSegments.removeDuplicates();
     final lList = LinkedList<_LinkedItem>()
-      ..addAll(segments.map(_LinkedItem.new));
+      ..addAll(
+        segments.map(_LinkedItem.new),
+      );
 
     for (final e in lList) {
       l('Iterating over: $e');

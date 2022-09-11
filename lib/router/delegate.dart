@@ -31,7 +31,6 @@ class BlazeDelegate extends IBlazeDelegate {
             child: Navigator(
               pages: pages,
               restorationScopeId: 'blaze-router-restoration-scope',
-              reportsRouteUpdateToEngine: true,
               key: navigatorKey,
               onPopPage: (route, dynamic result) {
                 if (!route.didPop(result)) {

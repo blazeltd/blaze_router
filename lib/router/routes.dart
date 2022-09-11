@@ -84,7 +84,7 @@ class BlazeRoutes extends IBlazeRoutes {
         );
       try {
         if (maxInnering != null && innering.length > maxInnering!) {
-          throw BlazeInneringError(
+          throw BlazeInneringException(
             maxInnering!,
             innering.length,
           );
@@ -128,7 +128,9 @@ class BlazeRoutes extends IBlazeRoutes {
       ..removeWhere(
         (element) => element.isEmpty,
       );
-
+    if (fullPaths[innering.length] == null) {
+      return null;
+    }
     for (final pathRouteEntry in fullPaths[innering.length]!.entries) {
       l(
         'Searching for route with path: $nPath, route: ${pathRouteEntry.key}, '

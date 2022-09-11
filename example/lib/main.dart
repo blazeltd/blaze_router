@@ -28,13 +28,21 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  late final BlazeRouter router;
+
+  @override
+  void initState() {
+    super.initState();
+    router = BlazeRouter(routes: routes);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final router = BlazeRouter(routes: routes);
     return MaterialApp.router(
       title: 'Material App',
       routerDelegate: router.delegate,
       routeInformationParser: router.parser,
+      restorationScopeId: 'root-restoration-scope',
     );
   }
 }

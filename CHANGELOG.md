@@ -1,18 +1,28 @@
+## 0.2.0
+
+### Breaking changes:
+- Introduced nested navigation
+ 
+### Internal:
+- Implement Exception instead of extending Error 
+
+## 0.1.1
+
+### Internal:
+- Removed generics from page's typedef
+
 ## 0.1.0
 
 ### Testing
-
 - Unit-tested configuration
 - Unit-tested blaze matcher
 - Unit-tested errors
 - Unit-tested router
 
 ### Breaking Changes:
-
 - Removed route information provider
 
 ### Internal:
-
 - Removed useless try\catches
 
 ## 0.0.2
@@ -30,7 +40,6 @@
 ## 0.0.1
 
 ### Introduced base components
-
 - BlazeDelegate
 - BlazeParser
 - BlazeInformationProvider

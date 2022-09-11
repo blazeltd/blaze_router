@@ -7,13 +7,13 @@ void main() {
   group('blaze matcher tests', () {
     final rootRoute = BlazeRoute(
       path: '/',
-      buildPage: (configuration) => const MaterialPage(
+      buildPage: (configuration, pages) => const MaterialPage(
         child: Material(child: Text('root')),
       ),
     );
     final grandChildRoute = BlazeRoute(
       path: '/:id',
-      buildPage: (configuration) => MaterialPage(
+      buildPage: (configuration, pages) => MaterialPage(
         child: Material(
           child: Text(
             'grandchild ${configuration.pathParams['id'].toString()}',
@@ -21,13 +21,24 @@ void main() {
         ),
       ),
     );
+    final grandChildRoute2 = BlazeRoute(
+      path: '/grand2',
+      buildPage: (configuration, pages) => const MaterialPage(
+        child: Material(
+          child: Text(
+            'GRAnD',
+          ),
+        ),
+      ),
+    );
     final childRoute = BlazeRoute(
       path: '/child',
-      buildPage: (configuration) => const MaterialPage(
+      buildPage: (configuration, _) => const MaterialPage(
         child: Material(child: Text('child')),
       ),
       children: [
         grandChildRoute,
+        grandChildRoute2,
       ],
     );
 
@@ -72,6 +83,13 @@ void main() {
       expect(
         matcher(location: '/child'),
         [rootRoute, childRoute],
+      );
+    });
+
+    test('match only one nested', () {
+      expect(
+        matcher(location: '/child/1/grand2'),
+        [rootRoute, childRoute, grandChildRoute],
       );
     });
 

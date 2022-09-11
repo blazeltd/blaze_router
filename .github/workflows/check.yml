@@ -23,6 +23,9 @@ jobs:
       options: --user root
 
     steps:
+      - name: 🫰 Check flutter version
+        run: flutter --version
+        
       - name: 🚂 Get latest code
         uses: actions/checkout@v2
 
@@ -53,7 +56,7 @@ jobs:
       - name: 🔎 Check format
         timeout-minutes: 1
         run: |
-          dart format --set-exit-if-changed -l 80 -o none .
+          flutter format --set-exit-if-changed -l 80 .
 
       - name: 📈 Check analyzer
         timeout-minutes: 1
